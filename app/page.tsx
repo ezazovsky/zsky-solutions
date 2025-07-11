@@ -1,6 +1,6 @@
-"use client";
+"use client"; 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Main App component
 export default function App() {
@@ -10,12 +10,15 @@ export default function App() {
   // State for about us image source
   const [aboutImageSrc, setAboutImageSrc] = useState("https://placehold.co/600x400/a78bfa/ffffff?text=About+Us");
 
+  // Create a ref for the contact form
+  const contactFormRef = useRef<HTMLFormElement>(null);
+
   // Smooth scrolling for navigation links
   const scrollToSection = (id: string) => { 
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMenuOpen(false);
+      setIsMenuOpen(false); 
     }
   };
 
@@ -35,10 +38,11 @@ export default function App() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission behavior
 
+    // Use contactFormRef.current to access form elements
     const formData = {
-      name: (e.currentTarget.elements.namedItem('name') as HTMLInputElement).value,
-      email: (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value,
-      message: (e.currentTarget.elements.namedItem('message') as HTMLTextAreaElement).value,
+      name: (contactFormRef.current?.elements.namedItem('name') as HTMLInputElement)?.value || '',
+      email: (contactFormRef.current?.elements.namedItem('email') as HTMLInputElement)?.value || '',
+      message: (contactFormRef.current?.elements.namedItem('message') as HTMLTextAreaElement)?.value || '',
     };
 
     try {
@@ -57,7 +61,9 @@ export default function App() {
         console.log('Response was OK. Attempting to show success alert and reset form.');
         try {
           alert('Message sent successfully!');
-          e.currentTarget.reset(); // Reset form fields
+          if (contactFormRef.current) {
+            contactFormRef.current.reset(); 
+          }
         } catch (alertError) {
           console.error('Error during success alert or form reset:', alertError);
           alert('Message sent successfully, but there was an issue with the confirmation. Please check console.');
@@ -68,12 +74,10 @@ export default function App() {
         alert(`Failed to send message: ${errorText || response.statusText}`);
       }
     } catch (error) {
-      // This catch block is for network errors or errors preventing fetch from completing
       console.error('Caught an unexpected error during fetch or initial processing:', error);
       alert('An error occurred while sending your message. Please try again later.');
     }
   };
-
 
   return (
     <>
@@ -322,7 +326,7 @@ export default function App() {
                 We&apos;d love to hear from you! Fill out the form below or reach out directly.
               </p>
               <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} ref={contactFormRef} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-left text-lg font-medium text-gray-700 mb-2">Name</label>
                     <input
