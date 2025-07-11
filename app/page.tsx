@@ -11,11 +11,11 @@ export default function App() {
   const [aboutImageSrc, setAboutImageSrc] = useState("https://placehold.co/600x400/a78bfa/ffffff?text=About+Us");
 
   // Smooth scrolling for navigation links
-  const scrollToSection = (id: string) => { // Added type annotation 'string' for 'id'
+  const scrollToSection = (id: string) => { 
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMenuOpen(false); // Close mobile menu after clicking
+      setIsMenuOpen(false);
     }
   };
 
@@ -30,6 +30,40 @@ export default function App() {
     // Cast e.target to HTMLImageElement to access src property
     (e.target as HTMLImageElement).src = "https://placehold.co/600x400/a78bfa/ffffff?text=Image+Load+Error"; // Fallback image
   };
+
+  // Function to handle contact form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    const formData = {
+      name: (e.currentTarget.elements.namedItem('name') as HTMLInputElement).value,
+      email: (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value,
+      message: (e.currentTarget.elements.namedItem('message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Message sent successfully!');
+        // Optionally clear the form fields
+        e.currentTarget.reset();
+      } else {
+        const errorText = await response.text();
+        alert(`Failed to send message: ${errorText || response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred while sending your message. Please try again later.');
+    }
+  };
+
 
   return (
     <>
@@ -164,7 +198,7 @@ export default function App() {
               <div className="md:w-1/2 flex justify-center md:justify-end animate-fade-in-right">
                 {/* Placeholder image or SVG for visual appeal */}
                 <img
-                  src={heroImageSrc}
+                  src={heroImageSrc} 
                   alt="Business Solutions"
                   width={500} 
                   height={300} 
@@ -234,9 +268,9 @@ export default function App() {
             <div className="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-10">
               <div className="md:w-1/2">
                 <img
-                  src={aboutImageSrc}
+                  src={aboutImageSrc} 
                   alt="About Us"
-                  width={600} 
+                  width={600}
                   height={400}
                   className="rounded-xl shadow-lg w-full h-auto object-cover"
                   onError={handleAboutImageError} 
@@ -278,7 +312,7 @@ export default function App() {
                 We&apos;d love to hear from you! Fill out the form below or reach out directly.
               </p>
               <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg">
-                <form className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
                     <label htmlFor="name" className="block text-left text-lg font-medium text-gray-700 mb-2">Name</label>
                     <input
