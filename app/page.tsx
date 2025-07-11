@@ -42,6 +42,7 @@ export default function App() {
     };
 
     try {
+      console.log('Attempting to send form data:', formData);
       const response = await fetch('http://localhost:8080/api/contact', {
         method: 'POST',
         headers: {
@@ -50,16 +51,25 @@ export default function App() {
         body: JSON.stringify(formData),
       });
 
+      console.log('Response received:', response);
+
       if (response.ok) {
-        alert('Message sent successfully!');
-        // Optionally clear the form fields
-        e.currentTarget.reset();
+        console.log('Response was OK. Attempting to show success alert and reset form.');
+        try {
+          alert('Message sent successfully!');
+          e.currentTarget.reset(); // Reset form fields
+        } catch (alertError) {
+          console.error('Error during success alert or form reset:', alertError);
+          alert('Message sent successfully, but there was an issue with the confirmation. Please check console.');
+        }
       } else {
+        console.error('Response was NOT OK. Attempting to show failure alert.');
         const errorText = await response.text();
         alert(`Failed to send message: ${errorText || response.statusText}`);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      // This catch block is for network errors or errors preventing fetch from completing
+      console.error('Caught an unexpected error during fetch or initial processing:', error);
       alert('An error occurred while sending your message. Please try again later.');
     }
   };
