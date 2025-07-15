@@ -47,7 +47,7 @@ export default function App() {
 
     try {
       console.log('Attempting to send form data:', formData);
-      const backendUrl = 'http://18.222.190.62:8080/api/contact';
+      const backendUrl = 'https://api.zskysolutions.xyz/api/contact';
       const response = await fetch(backendUrl, {
         method: 'POST',
         headers: {
