@@ -38,7 +38,7 @@ export default function ServicesPage() {
             In today's digital world, protecting your business from cyber threats is paramount. We offer comprehensive cybersecurity services to safeguard your data, network, and operations. Our proactive approach helps identify vulnerabilities and prevent attacks before they happen.
           </p>
           <ul className="list-disc list-inside text-gray-700 space-y-2 text-lg">
-            <li>24/7 network monitoring and threat detection</li>
+            <li>Network monitoring and threat detection</li>
             <li>Phishing prevention training and simulation</li>
             <li>Firewall and endpoint protection management</li>
             <li>Vulnerability assessments and penetration testing</li>
